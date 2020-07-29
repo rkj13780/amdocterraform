@@ -33,3 +33,10 @@ resource "azurerm_network_interface" "web_server_nic"{
         private_ip_address_allocation = "dynamic"
     }
 }
+
+resource "azurerm_public_ip" "web_server_ip"{
+    name = "${var.resource_prefix}-public" 
+    location = var.web_server_location
+    resource_group_name = azurerm_resource_group.web_server_rg.name
+    allocation_method = "Dynamic"
+}
