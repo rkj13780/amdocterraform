@@ -31,7 +31,7 @@ resource "azurerm_network_interface" "web_server_nic"{
         name = "${var.web_server_name}-ip"
         subnet_id = azurerm_subnet.web_server_subnet.id 
         private_ip_address_allocation = "dynamic"
-        public_ip_address_id = azurerm_public_ip.web_server_public_ip.id 
+        public_ip_address_id = azurerm_public_ip.web_server_ip.id 
     }
 }
 
@@ -71,7 +71,7 @@ resource "azurerm_windows_virtual_machine" "web_server" {
     name = var.web_server_name
     location = var.web_server_location
     resource_group_name = azurerm_resource_group.web_server_rg.name 
-    network_interface_id = [azurerm_network_interface.web_server_nic.id]
+    network_interface_ids = [azurerm_network_interface.web_server_nic.id]
     size = "Standard_B1s"
     admin_username = "webserver"
     admin_password = "Password@123456"
