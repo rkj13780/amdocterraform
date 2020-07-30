@@ -83,7 +83,7 @@ resource "azurerm_windows_virtual_machine" "web_server" {
     
     source_image_reference {
         publisher = "MicrosoftWindowsServer"
-        offer = "WindowsServerSemiAnnual"
+        offer = "WindowsServer"
         sku = "2019-Datacenter"
         version = "latest"
     }
