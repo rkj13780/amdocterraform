@@ -60,3 +60,8 @@ resource "azurerm_network_security_rule" "web_server_nsg_rule_rdp"{
     resource_group_name = azurerm_resource_group.web_server_rg.name
     network_security_group_name = azurerm_network_security_group.web_server_sg.name 
 }
+
+resource "azurerm_network_interface_security_group_association" "web_server_nsg_association"{
+    network_security_group_id = azurerm_network_security_group.web_server_sg.id
+    network_interface_id = azurerm_network_interface.web_server_nic.id
+}
