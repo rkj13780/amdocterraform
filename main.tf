@@ -2,7 +2,10 @@ provider "azurerm"{
     version = "=2.20.0"
     features{}
 }
-
+locals{
+    web_server_name = var.environment == "production" ? "${var.web_server_name}-prd" : "${var.web_server_name}-dev"
+    build_environment = var.environment == "production" ? "production" : "development"
+}
 resource "azurerm_resource_group" "web_server_rg" {
     name = var.web_server_rg
     location = var.web_server_location
@@ -85,7 +88,7 @@ resource "azurerm_virtual_machine_scale_set" "web_server" {
         managed_disk_type = "Standard_LRS"
       }
     os_profile{
-        computer_name_prefix = var.web_server_name
+        computer_name_prefix = local.web_server_name
         admin_username = "webserver"
         admin_password = "Password@123456"
     }
@@ -96,7 +99,7 @@ resource "azurerm_virtual_machine_scale_set" "web_server" {
         name = "web_server_network_profile"
         primary = true
         ip_configuration {
-            name = var.web_server_name
+            name = local.web_server_name
             primary = true
             subnet_id = azurerm_subnet.web_server_subnet["web-server"].id
         }
