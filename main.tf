@@ -124,7 +124,22 @@ resource "azurerm_virtual_machine_scale_set" "web_server" {
             load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.web_server_lb_backend_pool.id]
         }
     }
+    extension {
+        name = "${local.web_server_name}-extension"
+        publisher = "Microsoft.Compute"
+        type = "CustomScriptExtension"
+        type_handler_version = "1.10"
+        settings = <<SETTINGS
+    {
+        "fileUris": "https://raw.githubusercontent.com/eltimmo/learning/master/azureInstallWebServer.ps1",
+        "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -File azureInstallWebServer.ps1"
+    }
+SETTINGS
+
+    }
+
 }
+
 
 resource "azurerm_lb" "web_server_lb"{
     name = "${var.resource_prefix}-lb"
