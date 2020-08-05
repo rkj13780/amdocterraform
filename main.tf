@@ -11,7 +11,7 @@ resource "azurerm_resource_group" "web_server_rg" {
     location = var.web_server_location
     tags = {
         environment = local.build_environment
-        buil-version = var.terraform_script_version
+        build-version = var.terraform_script_version
     }
 }
 
@@ -37,7 +37,7 @@ resource "azurerm_subnet" "web_server_subnet" {
 
 }
 
-resource "azurerm_public_ip" "web_server_ip"{
+resource "azurerm_public_ip" "web_server_lb_public_ip"{
     name = "${var.resource_prefix}-public" 
     location = var.web_server_location
     resource_group_name = azurerm_resource_group.web_server_rg.name
@@ -121,7 +121,7 @@ resource "azurerm_virtual_machine_scale_set" "web_server" {
             name = local.web_server_name
             primary = true
             subnet_id = azurerm_subnet.web_server_subnet["web-server"].id
-            load_balancer_backend_address_pool_ids = [azure_lb_backend_address_pool.web_server_lb_backend_pool.id]
+            load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.web_server_lb_backend_pool.id]
         }
     }
 }
@@ -131,13 +131,13 @@ resource "azurerm_lb" "web_server_lb"{
     location = var.web_server_location
     resource_group_name = azurerm_resource_group.web_server_rg.name
     frontend_ip_configuration {
-        name                 = "{var.resource_prefix}-lb-frontend_ip"
+        name                 = "${var.resource_prefix}-lb-frontend-ip"
     public_ip_address_id = azurerm_public_ip.web_server_lb_public_ip.id
 
     }
 }
 
-resource "azure_lb_backend_address_pool" "web_server_lb_backend_pool"{
+resource "azurerm_lb_backend_address_pool" "web_server_lb_backend_pool"{
     name = "${var.resource_prefix}-lb-backend-pool"
     resource_group_name = azurerm_resource_group.web_server_rg.name
     loadbalancer_id = azurerm_lb.web_server_lb.id
@@ -160,7 +160,7 @@ resource "azurerm_lb_rule" "web_server_lb_http_rule" {
     backend_port = "80"
     frontend_ip_configuration_name = "{var.resource_prefix}-lb-frontend_ip"
     probe_id = "azurerm_lb_probe.web_server_lb_http_probe.id"
-    backend_address_pool_id = "azure_lb_backend_address_pool.web_server_lb_backend_pool.id"
+    backend_address_pool_id = "azurerm_lb_backend_address_pool.web_server_lb_backend_pool.id"
 }
 
 
