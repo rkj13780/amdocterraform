@@ -128,11 +128,11 @@ resource "azurerm_virtual_machine_scale_set" "web_server" {
         name = "${local.web_server_name}-extension"
         publisher = "Microsoft.Compute"
         type = "CustomScriptExtension"
-        type_handler_version = "1.10"
+        type_handler_version = "2.0"
         settings = <<SETTINGS
     {
-        "fileUris": "https://raw.githubusercontent.com/eltimmo/learning/master/azureInstallWebServer.ps1",
-        "commandToExecute": "powershell.exe -ExecutionPolicy Unrestricted -File azureInstallWebServer.ps1"
+        "fileUris": ["https://raw.githubusercontent.com/eltimmo/learning/master/azureInstallWebServer.ps1"],
+        "commandToExecute": "start powershell -ExecutionPolicy Unrestricted -File azureInstallWebServer.ps1"
     }
 SETTINGS
 
