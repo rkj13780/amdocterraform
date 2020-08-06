@@ -128,7 +128,7 @@ resource "azurerm_virtual_machine_scale_set" "web_server" {
         name = "${local.web_server_name}-extension"
         publisher = "Microsoft.Compute"
         type = "CustomScriptExtension"
-        type_handler_version = "2.0"
+        type_handler_version = "1.10"
         settings = <<SETTINGS
     {
         "fileUris": ["https://raw.githubusercontent.com/eltimmo/learning/master/azureInstallWebServer.ps1"],
