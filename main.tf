@@ -109,10 +109,11 @@ resource "azurerm_virtual_machine_scale_set" "web_server" {
     os_profile{
         computer_name_prefix = local.web_server_name
         admin_username = "webserver"
-        admin_password = "Password@123456"
+        admin_password = data.azurerm_key_vault_secret.admin_password.value
     }
     os_profile_windows_config {
         provision_vm_agent = true
+        enable_automatic_upgrades = true
     }
     network_profile {
         name = "web_server_network_profile"
