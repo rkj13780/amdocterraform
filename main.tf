@@ -13,6 +13,9 @@ resource "azurerm_resource_group" "web_server_rg" {
         environment = local.build_environment
         build-version = var.terraform_script_version
     }
+    lifecycle {
+        prevent_destroy = true
+    }
 }
 
 resource "azurerm_virtual_network" "web_server_vnet" {
