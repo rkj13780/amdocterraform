@@ -22,7 +22,7 @@ module "location_us2w" {
     }
     terraform_script_version = var.terraform_script_version
     admin_password = data.azurerm_key_vault_secret.admin_password.value
-    
+    domain_name_label = var.domain_name_label
     
 }
 
@@ -49,9 +49,10 @@ resource "azurerm_resource_group" "global_rg" {
     location = "westus2"
 }
 
-resource "azurerm_traffic_manager_profile" "traffic-manager"{
+resource "azurerm_traffic_manager_profile" "example"{
     name = "${var.resource_prefix}-traffic-manager"
     traffic_routing_method = "Weighted"
+    resource_group_name = azurerm_resource_group.global_rg.name
 dns_config {
 relative_name = var.domain_name_label
 ttl = 100
@@ -66,7 +67,7 @@ monitor_config {
 resource "azurerm_traffic_manager_endpoint" "traffic_manager_us2w"{
     name = "${var.resource_prefix}-us2w-endpoint"
     resource_group_name = azurerm_resource_group.global_rg.name
-    profile_name = azurerm_traffic_manager_profile.traffic_manager.name
+    profile_name = azurerm_traffic_manager_profile.example.name
     target_resource_id = module.location_us2w.web_server_lb_public_ip_id
     type = "azureEndpoints"
     weight = 100
