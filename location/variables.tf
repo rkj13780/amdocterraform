@@ -33,3 +33,6 @@ variable "terraform_script_version" {
 variable "admin_password" {
     type = string
 }
+variable "domain_name_label" {
+    type = string
+}
