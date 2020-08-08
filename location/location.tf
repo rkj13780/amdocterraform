@@ -10,7 +10,7 @@ resource "azurerm_resource_group" "web_server_rg" {
         build-version = var.terraform_script_version
     }
     lifecycle {
-        prevent_destroy = true
+        prevent_destroy = false
     }
 }
 
@@ -27,8 +27,8 @@ resource "azurerm_virtual_network" "web_server_vnet" {
     virtual_network_name = azurerm_virtual_network.web_server_vnet.name
     address_prefix = var.web_server_address_prefix
 } */
-resource "azurerm_subnet" "web_server_subnet" {
-    for_each = var.web_server_subnet
+resource "azurerm_subnet" "web_server_subnets" {
+    for_each = var.web_server_subnets
     name = each.key
     resource_group_name = azurerm_resource_group.web_server_rg.name
     virtual_network_name = azurerm_virtual_network.web_server_vnet.name
@@ -81,7 +81,7 @@ resource "azurerm_network_security_rule" "web_server_nsg_rule_http"{
 
 resource "azurerm_subnet_network_security_group_association" "web_server_sag"{
     network_security_group_id = azurerm_network_security_group.web_server_sg.id
-    subnet_id = azurerm_subnet.web_server_subnet["web-server"].id
+    subnet_id = azurerm_subnet.web_server_subnets["web-server"].id
 }
 resource "random_string" "random"{
     length = 10
@@ -134,7 +134,7 @@ resource "azurerm_virtual_machine_scale_set" "web_server" {
         ip_configuration {
             name = local.web_server_name
             primary = true
-            subnet_id = azurerm_subnet.web_server_subnet["web-server"].id
+            subnet_id = azurerm_subnet.web_server_subnets["web-server"].id
             load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.web_server_lb_backend_pool.id]
         }
     }
