@@ -72,4 +72,31 @@ resource "azurerm_traffic_manager_endpoint" "traffic_manager_us2w"{
     type = "azureEndpoints"
     weight = 100
 }
+resource "azurerm_private_link_service" "example" {
+  name                = "example-privatelink"
+  location            = "westus2"
+  resource_group_name = azurerm_resource_group.global_rg.name
 
+  nat_ip_configuration {
+    name      = module.location_us2w.web_server_lb_public_ip_id
+    primary   = true
+    subnet_id = module.location_us2w.web_server_subnets.id 
+  }
+
+  load_balancer_frontend_ip_configuration_ids = [
+    module.location_us2w.web_server_lb_public_ip_id,
+  ]
+}
+
+resource "azurerm_private_endpoint" "example" {
+  name                = "example-endpoint"
+  location            = azurerm_resource_group.example.location
+  resource_group_name = azurerm_resource_group.example.name
+  subnet_id           = azurerm_subnet.endpoint.id
+
+  private_service_connection {
+    name                           = "example-privateserviceconnection"
+    private_connection_resource_id = azurerm_private_link_service.example.id
+    is_manual_connection           = false
+  }
+}

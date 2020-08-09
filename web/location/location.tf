@@ -195,9 +195,32 @@ resource "azurerm_lb_rule" "web_server_lb_http_rule" {
     probe_id = azurerm_lb_probe.web_server_lb_http_probe.id
     backend_address_pool_id = azurerm_lb_backend_address_pool.web_server_lb_backend_pool.id
 }
+/*
+resource "azurerm_private_link_service" "web_server_private_link"{
+    name = "${var.resource_prefix}-pe"
+    location = var.web_server_location
+    resource_group_name = azurerm_resource_group.web_server_rg.name
+    nat_ip_configuration {
+        name = azurerm_public_ip.pe.name
+        primary = true
+        subnet_id = azurerm_subnet.web_server_subnets.id 
+    }
+    load_balancer_frontend_ip_configuration_ids = [azurerm_lb.myelb.frontend_ip_configuration.0.id,]
+}
 
+resource "azurerm_private_endpoint" "web_server_endpoint"{
+    name = "${var.resource_prefix}-end"
+    location = var.web_server_location
+    resource_group_name = azurerm_resource_group.web_server_rg.name
+    subnet_id = azurerm_subnet.web_server_subnets.id 
 
-
+    private_service_connection {
+        name = "web-server-private-connection"
+        private_connection_resource_id = azurerm_private_endpoint.web_server_endpoint
+        is_manual_connection = false
+    }
+    
+}*/
 
 
 

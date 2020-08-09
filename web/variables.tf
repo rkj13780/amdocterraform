@@ -22,3 +22,6 @@ variable "terraform_script_version" {
 variable "domain_name_label" {
     type = string
 }
+variable "private_link_subnet" {
+    type = string
+}
